@@ -1,0 +1,21 @@
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+*.egg-info/
+
+# Streamlit
+.streamlit/
+
+# Ambiente / segredos
+.env
+wallet/
+*.zip
+
+# Sistema
+.DS_Store
+Thumbs.db
+
+# Dados brutos pesados (opcional - remova se quiser versionar os CSVs tratados)
+# dados/*.csv
