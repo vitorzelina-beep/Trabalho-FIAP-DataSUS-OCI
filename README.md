@@ -1,6 +1,6 @@
 # 🏥 Internações do SUS em São Paulo — OCI + Select AI
 
-![Python](https://img.shields.io/badge/Python-3.12-blue)
+![Python](https://img.shields.io/badge/Python-3.10%2B-blue)
 ![Streamlit](https://img.shields.io/badge/Streamlit-Dashboard-FF4B4B)
 ![OCI](https://img.shields.io/badge/Oracle-Cloud%20Infrastructure-red)
 ![Status](https://img.shields.io/badge/status-em%20desenvolvimento-yellow)
