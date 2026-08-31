@@ -1,5 +1,9 @@
-pandas
-streamlit
-plotly
-pysus
-oracledb
+bs4>=0.0.2
+matplotlib>=3.10.9
+nest-asyncio>=1.6.0
+oracledb>=2.0.0
+pandas>=2.3.3
+plotly>=7.0.0
+pysus>=2.3.0
+requests>=2.34.2
+streamlit>=1.62.0
