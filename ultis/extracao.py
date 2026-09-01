@@ -2,6 +2,7 @@ import os
 import asyncio
 import glob
 import shutil
+import pandas as pd
 
 os.environ["PYSUS_CACHEPATH"] = os.path.abspath("data/raw")
 
@@ -50,7 +51,7 @@ def get_dados_leitos(state, year, month):
 # Extração — SIH (internações, grupo RD)
 # =============================================================================
 
-async def get_sih(state, year, month):
+"""async def get_sih(state, year, month):
     async with PySUS() as pysus:
         files = await pysus.query(
             dataset="sih",
@@ -81,6 +82,57 @@ def get_dados_sih(state, year, month):
     except Exception as e:
         import traceback
         traceback.print_exc()
+        return None"""
+
+
+
+
+async def get_sih(state, year, month):
+    async with PySUS() as pysus:
+        files = await pysus.query(
+            dataset="sih",
+            group="RD",
+            state=state,
+            year=year,
+            month=month,
+        )
+
+        if not files:
+            print(f"Nenhum arquivo encontrado para {state}/{year}/{month}.")
+            return None
+
+        local_paths = []
+        for f in files:
+            local = await pysus.download(f)
+            print("Baixado em:", local.path)
+            local_paths.append(local.path)
+
+        # Leitura dos arquivos baixados
+        df = pysus.read_parquet(local_paths, mode="union").df()
+
+        # Identifica a coluna de data (no SIH cru costuma ser DT_INTER, pós-tratamento data_internacao)
+        col_data = next((col for col in ["data_internacao", "DT_INTER"] if col in df.columns), None)
+
+        if col_data:
+            # Converte para datetime (trata tanto formato YYYYMMDD quanto ISO)
+            df[col_data] = pd.to_datetime(df[col_data], errors="coerce")
+            
+            # Filtra apenas o ano e mês desejados
+            df = df[
+                (df[col_data].dt.year == int(year)) & 
+                (df[col_data].dt.month == int(month))
+            ]
+
+        return df
+
+
+def get_dados_sih(state, year, month):
+    try:
+        df = asyncio.run(get_sih(state, year, month))
+        return df
+    except Exception as e:
+        import traceback
+        traceback.print_exc()
         return None
 
 
@@ -88,6 +140,7 @@ def get_dados_sih(state, year, month):
 # =============================================================================
 # Extração — Estabelecimentos (CNES-ST)
 # =============================================================================
+
 
 def _mover_st_para_pasta_propria(pasta_raiz: str = "data/raw/downloads/ducklake"):
     """
@@ -143,5 +196,5 @@ def get_dados_estabelecimentos(state, year, month):
 
 if __name__ == "__main__":
     #df_lt_raw = get_dados_leitos(state="SP", year=2026, month=5)
-    #df_sih_raw = get_dados_sih(state="SP", year=2026, month=5)
-    df_st_raw = get_dados_estabelecimentos(state="SP", year=2026, month=5)
+    df_sih_raw = get_dados_sih(state="SP", year=2026, month=6)
+    #df_st_raw = get_dados_estabelecimentos(state="SP", year=2026, month=5)

@@ -2,6 +2,7 @@ import pandas as pd
 import os
 import glob
 
+
 # =============================================================================
 # Tabelas de domínio CNES — fixas, não dependem de ano/mês/estado
 # =============================================================================
@@ -438,14 +439,13 @@ def tratar_hospitais_por_tipo_leito(
 
 
 if __name__ == "__main__":
-    from ultis.extracao import get_dados_leitos, get_dados_sih
-
-    df_lt_raw = get_dados_leitos(state="SP", year=2026, month=5)
+    from extracao import get_dados_leitos, get_dados_sih
+    df_lt_raw = get_dados_leitos(state="SP", year=2026, month=1)
     if df_lt_raw is not None:
-        tratar_leitos(df_lt_raw, year=2026, month=5, state="SP")
+       tratar_leitos(df_lt_raw, year=2026, month=1, state="SP")
 
-    df_sih_raw = get_dados_sih(state="SP", year=2026, month=5)
+    df_sih_raw = get_dados_sih(state="SP", year=2026, month=1)
     if df_sih_raw is not None:
-        tratar_sih(df_sih_raw, year=2026, month=5, state="SP")
+        tratar_sih(df_sih_raw, year=2026, month=1, state="SP")
 
-    df_hospitais = tratar_hospitais_por_tipo_leito(year=2026, month=5, state="SP")
+    df_hospitais = tratar_hospitais_por_tipo_leito(year=2026, month=1, state="SP")
